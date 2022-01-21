@@ -1,15 +1,20 @@
 import { Body, Controller, Get, Post } from '@nestjs/common'
-import AddProjectDto from './dtos/AddProjectDto'
+import AddProjectDto from './dtos/add-project-dto'
+import { ProjectDto } from './dtos/project-dto'
+import { ProjectsService } from './projects.service'
 
 @Controller('projects')
 export class ProjectsController {
+  constructor(private projectsService: ProjectsService) {}
+
   @Get()
-  listProjects(): string {
-    return `projects`
+  async listProjects(): Promise<ProjectDto[]> {
+    return await this.projectsService.findAll(null)
   }
 
   @Post()
-  addProject(@Body() addProjectDto:AddProjectDto): Partial<AddProjectDto> {
-    return new AddProjectDto()
+  async addProject(@Body() addProjectDto: AddProjectDto): Promise<ProjectDto> {
+    console.log(`project ${addProjectDto}`)
+    return await this.projectsService.create(addProjectDto)
   }
 }
